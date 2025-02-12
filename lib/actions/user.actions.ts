@@ -7,6 +7,7 @@ import { parseStringify } from "../utils";
 import Error from "next/error";
 import { cookies } from "next/headers";
 import { strict } from "assert";
+import { avatarPlaceholderUrl } from "@/constants";
 
 // checking whether user exist already??
 const getUserByEmail = async (email:string)=>{
@@ -52,7 +53,7 @@ export const createAccount = async ({username,email}:{username:string,email:stri
             {
                 username,
                 email,
-                avatar:'https://static.vecteezy.com/system/resources/previews/009/734/564/non_2x/default-avatar-profile-icon-of-social-media-user-vector.jpg',
+                avatar:avatarPlaceholderUrl,
                 accountId
             },
         );
