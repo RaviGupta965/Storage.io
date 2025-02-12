@@ -22,7 +22,7 @@ const getUserByEmail = async (email:string)=>{
 }
 
 // sending OTP
-const sendEmailOTP=async (email:string)=>{
+export const sendEmailOTP=async (email:string)=>{
     const {account}=await createAdminClient();
 
     try {
@@ -40,7 +40,7 @@ export const createAccount = async ({username,email}:{username:string,email:stri
     const accountId=await sendEmailOTP(email);
 
     if(!accountId){
-        throw new Error('Failed to send an OTP')
+        console.log('Failed to send OTP')
     }
 
     if(!existingUser){
@@ -61,9 +61,10 @@ export const createAccount = async ({username,email}:{username:string,email:stri
     return parseStringify({accountId})
 }
 
-export const verifySecret = async ({accountId,password}:{accountId:string,password:string}){
+export const verifySecret = async ({accountId,password}:{accountId:string,password:string})=>{
     try {
-        const {account}=await createAccount();
+        const {account}=await createAdminClient();
+
         const session=await account.createSession(accountId,password);
 
         (await cookies()).set('appwrite-session',session.secret,{
@@ -73,8 +74,8 @@ export const verifySecret = async ({accountId,password}:{accountId:string,passwo
             secure:true
         })
 
-        return parseStringify(sessionId:session.$id)
-    } catch (error:Error) {
-        console.log('ERROR :: WHILE MATCHING OTP', error.message)
+        return parseStringify({sessionId:session.$id})
+    } catch (error) {
+        console.log('ERROR :: WHILE MATCHING OTP', error)
     }
 }

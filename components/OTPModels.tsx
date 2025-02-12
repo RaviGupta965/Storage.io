@@ -1,15 +1,15 @@
+'use-client'
+
 import React, { useState } from 'react'
 import Image from 'next/image';
 import {
     AlertDialog,
     AlertDialogAction,
-    AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
 import {
@@ -19,10 +19,11 @@ import {
     InputOTPSlot,
 } from "@/components/ui/input-otp"
 import { Button } from './ui/button';
-
+import { verifySecret ,sendEmailOTP} from '@/lib/actions/user.actions';
+import { useRouter } from 'next/navigation';
 
 function OTPModels({ email, accountId }: { email: string, accountId: string }) {
-
+    const router=useRouter();
     const [open,setopen]=useState(true);
     const [pass,setpass]=useState('');
     const [loading,setloading]=useState(false);
@@ -30,18 +31,20 @@ function OTPModels({ email, accountId }: { email: string, accountId: string }) {
     const handleSubmit=async (e : React.MouseEvent<HTMLButtonElement>)=>{
         e.preventDefault();
         setloading(true);
-
+    
         try {
             // Call an API to verify OTP
-
+            const sessionId=await verifySecret({accountId,password:pass})
+            if(sessionId)   router.push('/');
 
         } catch (error) {
-            console.log('ERROR :: Failed to verify OTP',error.message);
+            console.log('ERROR :: Failed to verify OTP',error);
         }
     }
 
     const handleResendOTP=async()=>{
         // Call API to resend OTP
+        await sendEmailOTP(email);
 
     }
     return (
@@ -55,7 +58,7 @@ function OTPModels({ email, accountId }: { email: string, accountId: string }) {
                             We&apos;ve sent a code to <span className='pl-1 text-brand'>{email}</span>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <InputOTP maxLength={6}>
+                    <InputOTP maxLength={6} value={pass} onChange={setpass}>
                         <InputOTPGroup>
                             <InputOTPSlot index={0} className='shad-otp-slot'/>
                             <InputOTPSlot index={1} className='shad-otp-slot'/>
@@ -71,7 +74,7 @@ function OTPModels({ email, accountId }: { email: string, accountId: string }) {
                         </div>
                     </AlertDialogFooter>
                         <div className='subtitle-2 mt-2 text-center text-light-100'>
-                            Didn&apos;t Recieve Code? <Button type='buttton' variant='link' className='pl-1 text-brand' onClick={handleResendOTP} >click to resend</Button>
+                            Didn&apos;t Recieve Code? <Button type='button' variant='link' className='pl-1 text-brand' onClick={handleResendOTP} >click to resend</Button>
                         </div>
                 </AlertDialogContent>
             </AlertDialog>

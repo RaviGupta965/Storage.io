@@ -122,7 +122,7 @@ function AuthForm({ type }: { type: FormType }) {
 
 
         {/* <--------------------------------OTP VERIFICATION-------------------------> */}
-            {true && (<OTPModels email={form.getValues('email')} accountId={accountId} />)}
+            {accountId && (<OTPModels email={form.getValues('email')} accountId={accountId} />)}
         </>
     )
 }
