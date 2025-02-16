@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input"
 import Image from 'next/image'
 import Link from 'next/link'
-import { createAccount } from '@/lib/actions/user.actions'
+import { createAccount, SignInUser } from '@/lib/actions/user.actions'
 import OTPModels from './OTPModels'
 
 type FormType = "Sign in" | "Sign up"
@@ -56,7 +56,7 @@ function AuthForm({ type }: { type: FormType }) {
         setloading(true);
         // setting username as empty string in case of login
         try {
-            const user = await createAccount({ username: values.username || '', email: values.email });
+            const user = type==='Sign up' ? await createAccount({ username: values.username || '', email: values.email }) : await SignInUser(values.email)
             setaccountId(user.accountId);
         } catch (error) {
             console.log('ERROR :: WHILE REGISTERING USER', error);

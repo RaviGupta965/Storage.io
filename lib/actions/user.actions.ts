@@ -4,10 +4,9 @@ import { createAdminClient, createSessionClient } from "../appwrite";
 import { appwrite_config } from "../appwrite/config";
 import { Query , ID, Avatars} from "node-appwrite";
 import { parseStringify } from "../utils";
-import Error from "next/error";
 import { cookies } from "next/headers";
-import { strict } from "assert";
 import { avatarPlaceholderUrl } from "@/constants";
+import { redirect } from "next/navigation";
 
 // checking whether user exist already??
 const getUserByEmail = async (email:string)=>{
@@ -93,4 +92,29 @@ export const get_current_user = async ()=>{
         return null;
     }
     return parseStringify(user.documents[0]);
+}
+
+export const signOutButton=async ()=>{
+    const {account} = await createSessionClient();
+    try {
+        await account.deleteSession('current')
+        const cookieStore = await cookies();
+        cookieStore.delete('appwrite-session');
+    } catch (error) {
+        console.log('ERROR WHILE USER LOGOUT',error)
+    }finally{
+        redirect('/sign-in');
+    }
+}
+
+export const SignInUser = async (email:string)=>{
+    try {
+        const existinguser=await getUserByEmail(email);
+        if(existinguser){
+            await sendEmailOTP(email);
+        }
+        return parseStringify({accountId:existinguser.accountId});
+    } catch (error) {
+        console.log('ERROR :: SIGN-IN USER',error);
+    }
 }
