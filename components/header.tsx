@@ -11,7 +11,7 @@ function Header() {
       <div className='header-wrapper'>
         <FileUploader/>
         <form action="">
-            <Button>
+            <Button type='submit' className='sign-out-button'>
                 <Image src='/assets/icons/logout.svg' alt='logo' height={24} width={24} className='w-6'/>
             </Button>
         </form>

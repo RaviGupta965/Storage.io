@@ -1,6 +1,6 @@
 'use server';
 
-import { createAdminClient } from "../appwrite";
+import { createAdminClient, createSessionClient } from "../appwrite";
 import { appwrite_config } from "../appwrite/config";
 import { Query , ID, Avatars} from "node-appwrite";
 import { parseStringify } from "../utils";
@@ -79,4 +79,18 @@ export const verifySecret = async ({accountId,password}:{accountId:string,passwo
     } catch (error) {
         console.log('ERROR :: WHILE MATCHING OTP', error)
     }
+}
+
+export const get_current_user = async ()=>{
+    const {database,account}=await createSessionClient();
+    const result=await account.get();
+    const user=await database.listDocuments(
+        appwrite_config.databaseId,
+        appwrite_config.usersCollectionId,
+        [Query.equal('accountId',result.$id)]
+    )
+    if(user.total <=0){
+        return null;
+    }
+    return parseStringify(user.documents[0]);
 }
