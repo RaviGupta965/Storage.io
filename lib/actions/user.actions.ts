@@ -82,6 +82,7 @@ export const verifySecret = async ({accountId,password}:{accountId:string,passwo
 
 export const get_current_user = async ()=>{
     const {database,account}=await createSessionClient();
+    
     const result=await account.get();
     const user=await database.listDocuments(
         appwrite_config.databaseId,
@@ -112,8 +113,9 @@ export const SignInUser = async (email:string)=>{
         const existinguser=await getUserByEmail(email);
         if(existinguser){
             await sendEmailOTP(email);
+            return parseStringify({accountId:existinguser.accountId});
         }
-        return parseStringify({accountId:existinguser.accountId});
+        return null;
     } catch (error) {
         console.log('ERROR :: SIGN-IN USER',error);
     }

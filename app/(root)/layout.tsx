@@ -4,6 +4,7 @@ import Navigation from '@/components/navigation'
 import Header from '@/components/header'
 import { get_current_user } from '@/lib/actions/user.actions'
 import { redirect } from 'next/navigation'
+
 async function layout({children}:{children:React.ReactNode}) {
   const current_user=await get_current_user();
   if(!current_user){
