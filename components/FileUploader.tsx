@@ -3,8 +3,9 @@
 import React,{ useCallback ,useState}  from 'react'
 import {useDropzone} from 'react-dropzone'
 import { Button } from './ui/button';
-import { cn, getFileType } from '@/lib/utils';
+import { cn, convertFileToUrl, getFileType } from '@/lib/utils';
 import Image from 'next/image';
+import Thumbnail from './Thumbnail';
 
 
 interface props{
@@ -15,11 +16,16 @@ interface props{
 
 function FileUploader({ ownerId,accountId,className}:props) {
 
-  const [files,setfiles]=useState([]);
+  const [files,setfiles]=useState<File[]>([]);
+  
   const onDrop = useCallback(async (acceptedFiles:File[]) => {
-    setfiles(acceptedFiles)
+     setfiles(acceptedFiles)
   }, [])
 
+  const handleRemoveFile=(e:React.MouseEvent,filename:string)=>{
+    e.stopPropagation()
+    setfiles((prev)=>prev.filter((file)=>file.name!==filename))
+  }
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
   return (
@@ -36,11 +42,21 @@ function FileUploader({ ownerId,accountId,className}:props) {
             <h4 className='h4 text-light-100'>Uploading</h4>
 
             {
-              files.map((item)=>{
-                const [type,ext]=getFileType(files.name);
+              files.map((item,index)=>{
+                // console.log(item);
+                const {type,extension}=getFileType(item.name);
                 return(
-                  <li key={`${file.name}-${index}`} className='uploader-preview-item'>
+                  <li key={`${item.name}-${index}`} className='uploader-preview-item'>
+                    <div className='flex items-center gap-3'>
+                      <Thumbnail type={type} extension={extension} url={convertFileToUrl(item)} />
 
+
+                      <div className='preview-item-name'>
+                        {item.name}
+                        <Image src='/assets/icons/file-loader.gif' width={80} height={26}  alt='image-thumbnail'/>
+                      </div>
+                    </div>
+                    <Image src='/assets/icons/remove.svg' height={24} width={24} alt='remove' onClick={(e)=>handleRemoveFile(e,item.name)} />
                   </li>
                 )
               })
