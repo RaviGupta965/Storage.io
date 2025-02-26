@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers"
 import { appwrite_config } from "./config"
-import { Account, Avatars, Client, Databases } from "node-appwrite"
+import { Account, Avatars, Client, Databases,Storage } from "node-appwrite"
 
 export const createSessionClient= async()=>{
     const client=new Client()
@@ -42,7 +42,7 @@ export const createAdminClient=async()=>{
             return new Databases (admin);
         },
         get storage(){
-            return new Storage();
+            return new Storage(admin);
         },
         get avatars(){
             return new Avatars (admin);

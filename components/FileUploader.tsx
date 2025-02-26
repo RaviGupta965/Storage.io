@@ -6,7 +6,10 @@ import { Button } from './ui/button';
 import { cn, convertFileToUrl, getFileType } from '@/lib/utils';
 import Image from 'next/image';
 import Thumbnail from './Thumbnail';
-
+import { MAX_FILE_SIZE } from '@/constants';
+import { toast } from "sonner"
+import { uploadFile } from '@/lib/actions/files.action';
+import { usePathname } from 'next/navigation';
 
 interface props{
   ownerId:string,
@@ -15,18 +18,38 @@ interface props{
 }
 
 function FileUploader({ ownerId,accountId,className}:props) {
-
+  const path=usePathname()
   const [files,setfiles]=useState<File[]>([]);
   
   const onDrop = useCallback(async (acceptedFiles:File[]) => {
      setfiles(acceptedFiles)
-  }, [])
+     const uploadpromises=await acceptedFiles.map(async(file)=>{
+      if(file.size>MAX_FILE_SIZE){
+        setfiles((prev)=> prev.filter((f)=>f.name!==file.name));
+
+        return toast(<p className='body-2 text-white'><span className='font-semibold'>{file.name}</span> is too large.Max File size is 50MB</p>,
+          {
+            className: "error-toast",
+          }
+        );
+      }
+
+      try {
+        const uploadedFile = await uploadFile({ file, ownerId, accountId, path });
+        setfiles((prev) => prev.filter((f) => f.name !== file.name));
+      } catch (error) {
+        console.error("Upload failed for:", file.name, error);
+      }
+     }) 
+
+     await Promise.all(uploadpromises);
+  }, [ownerId,accountId,path])
 
   const handleRemoveFile=(e:React.MouseEvent,filename:string)=>{
     e.stopPropagation()
     setfiles((prev)=>prev.filter((file)=>file.name!==filename))
   }
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+  const {getRootProps, getInputProps} = useDropzone({onDrop})
 
   return (
     <div {...getRootProps()} className='cursor-pointer'>
@@ -40,7 +63,6 @@ function FileUploader({ ownerId,accountId,className}:props) {
         files.length>0 && (
           <ul className='uploader-preview-list'>
             <h4 className='h4 text-light-100'>Uploading</h4>
-
             {
               files.map((item,index)=>{
                 // console.log(item);
@@ -63,11 +85,6 @@ function FileUploader({ ownerId,accountId,className}:props) {
             }
           </ul>
         )
-      }
-      {
-        isDragActive ?
-          <p>Drop the files here ...</p> :
-          <p>Drag 'n' drop some files here, or click to select files</p>
       }
     </div>
   )

@@ -24,7 +24,7 @@ interface props {
   email: string,
   avatar: string
 }
-function Navigation({ ownerId, accountId, username, email, avatar }: props) {
+function Navigation({ $id:ownerId, accountId, username, email, avatar }: props) {
   const [open, setopen] = useState(false);
   const pathname = usePathname()
   return (
@@ -64,7 +64,7 @@ function Navigation({ ownerId, accountId, username, email, avatar }: props) {
           </nav>
           <Separator className='mb-4 bg-light-200' />
           <div className='flex flex-col justify-between gap-5 pb-5'>
-            <FileUploader />
+            <FileUploader ownerId={ownerId} accountId={accountId}/>
             <Button type='submit' onClick={async ()=>await signOutButton} className='mobile-sign-out-button'>
                 <Image src='/assets/icons/logout.svg' alt='logo' height={24} width={24}/>
                 <p>Logout</p>
