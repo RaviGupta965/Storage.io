@@ -1,6 +1,6 @@
 'use server';
 
-import { createAdminClient, createSessionClient } from "../appwrite";
+import { createAdminClient, createSessionClient } from "../appwrite/index";
 import { appwrite_config } from "../appwrite/config";
 import { Query , ID, Avatars} from "node-appwrite";
 import { parseStringify } from "../utils";
@@ -81,8 +81,10 @@ export const verifySecret = async ({accountId,password}:{accountId:string,passwo
 }
 
 export const get_current_user = async ()=>{
-    const {database,account}=await createSessionClient();
+    const sessionClient = await createSessionClient();
+    if (!sessionClient) return null;
     
+    const { database, account } = sessionClient;
     const result=await account.get();
     const user=await database.listDocuments(
         appwrite_config.databaseId,
