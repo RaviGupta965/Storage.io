@@ -6,7 +6,7 @@ import Card from '@/components/Card';
 async function page({ params }: SearchParamProps) {
     const type = (await params)?.type || "";
     const files =await getFiles();
-    console.log(files);
+    // console.log(files);
     return (
         <div className='page-container'>
             <section className='w-full'>
