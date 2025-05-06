@@ -14,7 +14,7 @@ export const uploadFile=async({file,ownerId,accountId,path}:UploadFileProps)=>{
         const file_document={
             type:getFileType(bucketFile.name).type,
             name:bucketFile.name,
-            url:constructFileUrl(bucketFile.$id),
+            url:constructFileUrl(appwrite_config.bucketCollectionId,bucketFile.$id),
             extension:getFileType(bucketFile.name).extension,
             size:bucketFile.sizeOriginal,
             owners:ownerId,
@@ -34,6 +34,7 @@ export const uploadFile=async({file,ownerId,accountId,path}:UploadFileProps)=>{
         console.log('ERROR :: UPLOADING FILE',error);
     }
 }
+
 const createQueries=(current_user:Models.Document)=>{
     const queries=[
         Query.or([
