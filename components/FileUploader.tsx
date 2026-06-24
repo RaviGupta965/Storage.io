@@ -20,10 +20,10 @@ interface props{
 function FileUploader({ ownerId,accountId,className}:props) {
   const path=usePathname()
   const [files,setfiles]=useState<File[]>([]);
-  
+
   const onDrop = useCallback(async (acceptedFiles:File[]) => {
      setfiles(acceptedFiles)
-     const uploadpromises=await acceptedFiles.map(async(file)=>{
+     const uploadpromises=acceptedFiles.map(async(file)=>{
       if(file.size>MAX_FILE_SIZE){
         setfiles((prev)=> prev.filter((f)=>f.name!==file.name));
 
@@ -35,12 +35,14 @@ function FileUploader({ ownerId,accountId,className}:props) {
       }
 
       try {
-        const uploadedFile = await uploadFile({ file, ownerId, accountId, path });
+        await uploadFile({ file, ownerId, accountId, path });
         setfiles((prev) => prev.filter((f) => f.name !== file.name));
       } catch (error) {
         console.error("Upload failed for:", file.name, error);
+        toast(<p className='body-2 text-white'>Failed to upload <span className='font-semibold'>{file.name}</span></p>,
+          { className: "error-toast" });
       }
-     }) 
+     })
 
      await Promise.all(uploadpromises);
   }, [ownerId,accountId,path])
@@ -54,7 +56,7 @@ function FileUploader({ ownerId,accountId,className}:props) {
   return (
     <div {...getRootProps()} className='cursor-pointer'>
       <input {...getInputProps()} />
-      <Button type='button' className={cn('uploader-button')}>
+      <Button type='button' className={cn('uploader-button',className)}>
         <Image alt='upload' src='/assets/icons/upload.svg' width={24} height={24} />
         <p className=''>Upload</p>
       </Button>
@@ -65,7 +67,6 @@ function FileUploader({ ownerId,accountId,className}:props) {
             <h4 className='h4 text-light-100'>Uploading</h4>
             {
               files.map((item,index)=>{
-                // console.log(item);
                 const {type,extension}=getFileType(item.name);
                 return(
                   <li key={`${item.name}-${index}`} className='uploader-preview-item'>

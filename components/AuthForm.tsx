@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -38,7 +37,7 @@ function AuthForm({ type }: { type: FormType }) {
 
     const [loading, setloading] = useState(false);
     const [errorMessage, seterrorMessage] = useState('');
-    const [accountId, setaccountId] = useState(null);
+    const [accountId, setaccountId] = useState<string | null>(null);
 
     const FormSchema = authFormSchema(type)
 
@@ -54,12 +53,26 @@ function AuthForm({ type }: { type: FormType }) {
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof FormSchema>) {
         setloading(true);
+        seterrorMessage('');
         // setting username as empty string in case of login
         try {
-            const user = type==='Sign up' ? await createAccount({ username: values.username || '', email: values.email }) : await SignInUser(values.email)
+            const user = type === 'Sign up'
+                ? await createAccount({ username: values.username || '', email: values.email })
+                : await SignInUser(values.email)
+
+            if (!user?.accountId) {
+                seterrorMessage(
+                    type === 'Sign in'
+                        ? 'No account found for this email. Please sign up first.'
+                        : 'Failed to create account. Please try again.'
+                );
+                return;
+            }
+
             setaccountId(user.accountId);
         } catch (error) {
             console.log('ERROR :: WHILE REGISTERING USER', error);
+            seterrorMessage('Something went wrong. Please try again.');
         } finally {
             setloading(false);
         }
@@ -109,7 +122,7 @@ function AuthForm({ type }: { type: FormType }) {
                     </Button>
                     {
                         errorMessage && (
-                            <p>{errorMessage}</p>
+                            <p className='text-center text-red-500'>{errorMessage}</p>
                         )
                     }
                     <div className='body-2 flex justify-center'>
