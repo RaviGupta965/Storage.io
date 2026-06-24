@@ -7,6 +7,8 @@ import Thumbnail from '@/components/Thumbnail'
 import FormattedDateTime from '@/components/FormattedDateTime'
 import ActionDropdown from '@/components/ActionDropdown'
 
+export const dynamic = 'force-dynamic'
+
 async function Dashboard() {
   const [files, totalSpace] = await Promise.all([
     getFiles({ types: [], limit: 10 }),
