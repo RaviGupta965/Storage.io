@@ -18,7 +18,7 @@ import { Button } from './ui/button';
 import FileUploader from './FileUploader';
 import { signOutButton } from '@/lib/actions/user.actions';
 interface props {
-  ownerId: string,
+  $id : string,
   accountId: string,
   username: string,
   email: string,
@@ -65,7 +65,7 @@ function Navigation({ $id:ownerId, accountId, username, email, avatar }: props) 
           <Separator className='mb-4 bg-light-200' />
           <div className='flex flex-col justify-between gap-5 pb-5'>
             <FileUploader ownerId={ownerId} accountId={accountId}/>
-            <Button type='submit' onClick={async ()=>await signOutButton} className='mobile-sign-out-button'>
+            <Button type='button' onClick={async ()=>await signOutButton} className='mobile-sign-out-button'>
                 <Image src='/assets/icons/logout.svg' alt='logo' height={24} width={24}/>
                 <p>Logout</p>
             </Button>

@@ -6,7 +6,7 @@ function layout({ children }: { children: React.ReactNode }) {
         <div className='flex min-h-screen'>
             <section className='bg-brand-100 rounded-r-3xl p-10 hidden w-1/2 items-center justify-center lg:flex xl:w-2/5 lg:flex-col'>
                 <div className='flex max-h-[800px] max-w-[430px] flex-col justify-center pb-8'>
-                    <img src="/assets/icons/logo-full.svg" alt="Logo" width={224} height={82} className='h-auto' />
+                    <Image src="/assets/icons/logo-full.svg" alt="Logo" width={224} height={82} className='h-auto' />
                 </div>
                 <div className='space-y-5 text-white p-3'>
                     <h1 className='h1'> Manage Your Files the best way </h1>
@@ -14,7 +14,7 @@ function layout({ children }: { children: React.ReactNode }) {
                         This is the place where u can store all your documents
                     </p>
                 </div>
-                <img src="/assets/images/files.png" alt="illustration" height={342} width={342} className='transition-all hover:rotate-6' />
+                <Image src="/assets/images/files.png" alt="illustration" width={342} height={342} className='transition-all hover:rotate-6' />
             </section>
 
             <section className='flex flex-1 flex-col items-center bg-white p-4 py-10 lg:justify-center lg:p-10 lg:py-0'>
