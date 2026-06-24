@@ -39,7 +39,7 @@ function Sidebar({ username, avatar, email }: props) {
 
       <Image className='w-full' src='/assets/images/files-2.png' alt='logo' width={500} height={400} />
       <div className='sidebar-user-info'>
-        <Image src={avatarPlaceholderUrl} alt='avatar' height={44} width={44} className='sidebar-user-avatar' />
+        <Image src={avatar || avatarPlaceholderUrl} alt='avatar' height={44} width={44} className='sidebar-user-avatar' />
         <div className='hidden lg:block'>
           <p className='subtitle-2 capitalize'>{username}</p>
           <p className='caption'>{email}</p>
