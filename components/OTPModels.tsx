@@ -1,4 +1,4 @@
-'use-client'
+'use client'
 
 import React, { useState } from 'react'
 import Image from 'next/image';
@@ -15,7 +15,6 @@ import {
 import {
     InputOTP,
     InputOTPGroup,
-    InputOTPSeparator,
     InputOTPSlot,
 } from "@/components/ui/input-otp"
 import { Button } from './ui/button';
@@ -31,7 +30,7 @@ function OTPModels({ email, accountId }: { email: string, accountId: string }) {
     const handleSubmit=async (e : React.MouseEvent<HTMLButtonElement>)=>{
         e.preventDefault();
         setloading(true);
-    
+
         try {
             // Call an API to verify OTP
             const sessionId=await verifySecret({accountId,password:pass})
@@ -39,6 +38,8 @@ function OTPModels({ email, accountId }: { email: string, accountId: string }) {
 
         } catch (error) {
             console.log('ERROR :: Failed to verify OTP',error);
+        } finally {
+            setloading(false);
         }
     }
 
@@ -70,7 +71,7 @@ function OTPModels({ email, accountId }: { email: string, accountId: string }) {
                     </InputOTP>
                     <AlertDialogFooter>
                         <div className='flex w-full flex-col gap-4'>
-                            <AlertDialogAction type='button' onClick={handleSubmit} className='shad-submit-btn h-12'>Submit {loading && <Image src='/assets/icons/loader.svg' alt='loader' height={24} width={24} className='ml-2 animate-spin' />} </AlertDialogAction>
+                            <AlertDialogAction type='button' disabled={loading || pass.length < 6} onClick={handleSubmit} className='shad-submit-btn h-12'>Submit {loading && <Image src='/assets/icons/loader.svg' alt='loader' height={24} width={24} className='ml-2 animate-spin' />} </AlertDialogAction>
                         </div>
                     </AlertDialogFooter>
                         <div className='subtitle-2 mt-2 text-center text-light-100'>

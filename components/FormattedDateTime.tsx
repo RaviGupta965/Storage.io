@@ -1,12 +1,12 @@
-'use client'
 import React from 'react'
-function FormattedDateTime({date,className}:{date:string,className?:string}) {
+import { cn, formatDateTime } from '@/lib/utils'
+
+function FormattedDateTime({ date, className }: { date: string; className?: string }) {
   return (
-    <div>
-      hello
-    </div>
+    <p className={cn('body-1 text-light-200', className)}>
+      {formatDateTime(date)}
+    </p>
   )
 }
 
 export default FormattedDateTime
-

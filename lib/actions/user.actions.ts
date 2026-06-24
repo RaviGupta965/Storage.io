@@ -2,7 +2,7 @@
 
 import { createAdminClient, createSessionClient } from "../appwrite/index";
 import { appwrite_config } from "../appwrite/config";
-import { Query , ID, Avatars} from "node-appwrite";
+import { Query , ID} from "node-appwrite";
 import { parseStringify } from "../utils";
 import { cookies } from "next/headers";
 import { avatarPlaceholderUrl } from "@/constants";
@@ -98,9 +98,11 @@ export const get_current_user = async ()=>{
 }
 
 export const signOutButton=async ()=>{
-    const {account} = await createSessionClient();
+    const sessionClient = await createSessionClient();
     try {
-        await account.deleteSession('current')
+        if (sessionClient) {
+            await sessionClient.account.deleteSession('current')
+        }
         const cookieStore = await cookies();
         cookieStore.delete('appwrite-session');
     } catch (error) {
